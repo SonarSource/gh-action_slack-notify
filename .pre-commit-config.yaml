@@ -7,12 +7,32 @@ repos:
       - id: check-hooks-apply
       - id: check-useless-excludes
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: 3298ddab3c13dd77d6ce1fc0baf97691430d84b0  # frozen: v4.3.0
+    rev: c4a0b883114b00d8d76b479c820ce7950211c99b  # frozen: v4.5.0
     hooks:
       - id: trailing-whitespace
       - id: end-of-file-fixer
       - id: check-added-large-files
+      - id: check-yaml
   - repo: https://github.com/igorshubovych/markdownlint-cli
     rev: f295829140d25717bc79368d3f966fc1f67a824f  # frozen: v0.41.0
     hooks:
       - id: markdownlint
+  - repo: https://github.com/pycqa/flake8
+    rev: 88a4f9b2f48fc44b025a48fa6a8ac7cc89ef70e0
+    hooks:
+      - id: flake8
+        additional_dependencies: ['flake8-typing-imports==1.15.0']
+  - repo: https://github.com/hhatto/autopep8
+    rev: d5bbdbc53d161200282959d0ffbfbf2f66da2921
+    hooks:
+      - id: autopep8
+  - repo: https://github.com/asottile/reorder_python_imports
+    rev: e77caa8638839e934828a1968ce30a9ee4f3f509
+    hooks:
+      - id: reorder-python-imports
+        args: [--py3-plus]
+  - repo: https://github.com/python-jsonschema/check-jsonschema
+    rev: cfc76880a393e26fe52536300c21aeaa096f2a84  # frozen: 0.28.4
+    hooks:
+      - id: check-github-workflows
+        args: ["--verbose"]

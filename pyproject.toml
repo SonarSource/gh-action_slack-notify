@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "gh-action_slack-notify"
+version = "0.1.0"
+description = "GitHub action to send Slack notifications for failed GitHub Checks."
+authors = ["Engineering Experience Squad <platform.eng-ex@sonarsource.com>"]
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.2.1"
+pytest-cov = "^6.0.0"
+
+[build-system]
+requires = ["poetry-core>=1.8"]
+build-backend = "poetry.core.masonry.api"
