@@ -1,0 +1,54 @@
+---
+name: 'Slack Notify'
+description: 'GitHub Action to send Slack notifications for failed GitHub Checks'
+inputs:
+  slackChannel:
+    type: string
+    description: Name of the slack channel where the notifications are to be sent.
+    default: build
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: Slack Secrets
+      if: ${{ !env.ACT }}
+      id: secrets
+      uses: SonarSource/vault-action-wrapper@d6d745ffdbc82b040df839b903bc33b5592cd6b0 # 3.0.2
+      with:
+        secrets: |
+          development/kv/data/slack token | slack_token;
+
+    - name: Install poetry
+      run: pipx install poetry
+      shell: bash
+
+    - name: Set up Python
+      uses: actions/setup-python@42375524e23c412d93fb67b49958b491fce71c38 # v5.4.0
+      with:
+        python-version-file: ${{ github.action_path }}/pyproject.toml
+        cache: 'poetry'
+
+    - name: Install dependencies
+      run: poetry install
+      shell: bash
+
+    - name: Run main.py
+      id: main
+      env:
+        SLACK_TOKEN: ${{ !env.ACT && fromJSON(steps.secrets.outputs.vault).slack_token || env.SLACK_TOKEN }}
+        GITHUB_ACTOR_ID: ${{ !env.ACT && github.actor_id || env.GITHUB_ACTOR_ID }}
+        GITHUB_CHECK_SUITE_ID: ${{ !env.ACT && github.event.check_suite.id || env.GITHUB_CHECK_SUITE_ID }}
+        GITHUB_REPOSITORY: ${{ github.repository }}
+      run: |
+        poetry run python ${{ github.action_path }}/src/main.py
+      shell: bash
+
+    - name: Send Slack Notification
+      uses: slackapi/slack-github-action@485a9d42d3a73031f12ec201c457e2162c45d02d # v2.0.0
+      with:
+        method: chat.postMessage
+        token: ${{ !env.ACT && fromJSON(steps.secrets.outputs.vault).slack_token || env.SLACK_TOKEN }}
+        payload: |
+          channel: "${{ inputs.slackChannel }}"
+          text: "build failed"
+          attachments: "${{ fromJSON(steps.main.outputs.attachments) }}"

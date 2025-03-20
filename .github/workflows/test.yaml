@@ -1,0 +1,94 @@
+name: Test Slack Notification Action
+
+on:
+  workflow_dispatch: # Allows manual triggering for testing
+  pull_request:
+  push:
+
+permissions:
+  contents: read
+  checks: read
+  id-token: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Vault Secrets
+        id: secrets
+        uses: SonarSource/vault-action-wrapper@d6d745ffdbc82b040df839b903bc33b5592cd6b0 # 3.0.2
+        with:
+          secrets: |
+            development/kv/data/slack token | slack_token;
+
+      - name: Simulate failing check runs
+        id: simulate_failures
+        run: |
+          # Create a JSON payload that mimics the structure of the GITHUB_EVENT_PATH
+          # when a check_suite event is triggered.  Crucially, this includes
+          # details of failing check_runs.
+          #
+          # This is a simplified example.  You'll likely need to adjust the
+          # payload to match the exact structure your action expects.
+
+          CHECK_SUITE_ID=$((RANDOM % 100000)) # Generate a random check suite ID
+
+          EVENT_PAYLOAD=$(cat <<EOF
+          {
+            "check_suite": {
+              "id": $CHECK_SUITE_ID,
+              "head_branch": "main",
+              "head_sha": "abcdefg12345",
+              "status": "completed",
+              "conclusion": "failure"
+            },
+            "check_runs": [
+              {
+                "id": 123,
+                "name": "Check Run 1",
+                "status": "completed",
+                "conclusion": "failure",
+                "output": {
+                  "title": "Test Failure",
+                  "summary": "Some tests failed."
+                }
+              },
+              {
+                "id": 456,
+                "name": "Check Run 2",
+                "status": "completed",
+                "conclusion": "failure",
+                "output": {
+                  "title": "Linting Errors",
+                  "summary": "Linting found errors."
+                }
+              }
+            ]
+          }
+          EOF
+          )
+
+          # Create the event.json file
+          echo "$EVENT_PAYLOAD" > event.json
+          echo "CHECK_SUITE_ID=$CHECK_SUITE_ID" >> $GITHUB_ENV # Make available to action
+
+      - name: Test Action
+        id: slack-notification
+        uses: ./ # Uses the action in the root directory
+        with:
+          slackChannel: '#build'
+        env:
+          SLACK_TOKEN: ${{ fromJSON(steps.secrets.outputs.vault).slack_token }}
+          GITHUB_EVENT_PATH: ${{ github.workspace }}/event.json # Point to dummy event
+          GITHUB_ACTOR_ID: 12345 # Dummy actor ID
+          GITHUB_CHECK_SUITE_ID: ${{ env.CHECK_SUITE_ID }} # Pass the simulated check suite ID
+
+      - name: Check status
+        run: |
+          echo "Notification Status: ${{ steps.slack-notification.outputs.notification_status }}"
+          # Add assertions here to validate the output
+          # Example: Assert that the status is "success"
+          # assert ${{ steps.slack-notification.outputs.notification_status }} == "success"
