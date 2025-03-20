@@ -1,3 +1,4 @@
+import io
 import os
 import unittest
 from unittest.mock import MagicMock
@@ -24,9 +25,10 @@ class TestAction(unittest.TestCase):
                              "GITHUB_TOKEN": "test_token",
                              "GITHUB_ENV": "/tmp/test_env",
                              "GITHUB_REPOSITORY": "SonarSource/gh-action_slack-notify"})
+    @patch("sys.stdout", new_callable=io.StringIO)
     @patch("builtins.open", new_callable=mock_open)
     @patch("src.main.Github")
-    def test_check_suite_event(self, mock_github, mock_file):
+    def test_check_suite_event(self, mock_github, mock_file, mock_stdout):
         mock_repo = MagicMock()
         mock_check_suite = MagicMock()
         mock_check_run_success = MagicMock()
@@ -48,6 +50,8 @@ class TestAction(unittest.TestCase):
 
         main()
 
+        self.assertEqual(mock_stdout.getvalue(
+        ), "Retrieving failed check runs for check suite ID: 123\n")
         self.assertEqual(mock_file().write.call_count, 3)
         calls = mock_file().write.call_args_list
         print(calls)

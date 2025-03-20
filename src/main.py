@@ -29,8 +29,7 @@ def main():
         with open(github_env, 'a') as env:
             env.write("event_type=check_run\n")
     else:
-        print(f"Retrieving failed check runs for check suite ID: {
-              check_suite_id}")
+        print(f"Retrieving failed check runs for check suite ID: {check_suite_id}")
         repo = get_repo(repository)
         check_suite = repo.get_check_suite(int(check_suite_id))
         failed_check_runs = get_failed_check_runs(check_suite)

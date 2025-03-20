@@ -22,3 +22,6 @@ minversion = "6.0"
 addopts = "--cov=src --cov-report html:build/coverage-html --cov-report xml:build/coverage.xml --cov-report term"
 pythonpath = "src"
 testpaths = "tests"
+
+[tool.autopep8]
+max_line_length = 127
