@@ -578,6 +578,21 @@ socks = ["PySocks (>=1.5.6,!=1.5.7)"]
 use-chardet-on-py3 = ["chardet (>=3.0.2,<6)"]
 
 [[package]]
+name = "slack-sdk"
+version = "3.35.0"
+description = "The Slack API Platform SDK for Python"
+optional = false
+python-versions = ">=3.6"
+groups = ["main"]
+files = [
+    {file = "slack_sdk-3.35.0-py2.py3-none-any.whl", hash = "sha256:00933d171fbd8a068b321ebb5f89612cc781d3183d8e3447c85499eca9d865be"},
+    {file = "slack_sdk-3.35.0.tar.gz", hash = "sha256:8183b6cbf26a0c1e2441478cd9c0dc4eef08d60c1394cfdc9a769e309a9b6459"},
+]
+
+[package.extras]
+optional = ["SQLAlchemy (>=1.4,<3)", "aiodns (>1.0)", "aiohttp (>=3.7.3,<4)", "boto3 (<=2)", "websocket-client (>=1,<2)", "websockets (>=9.1,<16)"]
+
+[[package]]
 name = "tomli"
 version = "2.2.1"
 description = "A lil' TOML parser"
@@ -742,4 +757,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.10"
-content-hash = "2d61c6dafec70fdfd19e4a872e89c03bb66fe8892dd51cf0818d5ebc2ab31e84"
+content-hash = "c53673f243e815dee607d467c3093001f3763aa7d3c5bc533c66a54f4f9cba9b"
