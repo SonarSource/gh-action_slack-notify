@@ -1,64 +1,64 @@
-repository,workflow,codeowners
-SonarSource/sonar-scanner-jenkins,slack_notify.yml,@sonarsource/orchestration-workflow-squad
-SonarSource/sonar-php,slack-notify.yaml,@SonarSource/security-cloud-squad
-SonarSource/sonar-abap,slack_notify.yml,@SonarSource/security-engine-squad
-SonarSource/sonar-cobol,slack_notify.yml,@SonarSource/quality-abd-squad
-SonarSource/sonar-plsql,SlackNotification.yml,@SonarSource/quality-dotnet-squad
-SonarSource/sonar-vb,SlackNotification.yml,@SonarSource/quality-dotnet-squad
-SonarSource/sonar-java,slack_notify.yml,@SonarSource/quality-jvm-squad
-SonarSource/sonar-pli,slack_notify.yml,@SonarSource/security-engine-squad
-SonarSource/sonar-cpp,slack_notify.yml,@sonarsource/quality-cfamily-squad
-SonarSource/sonar-update-center,slack_notify.yml,@SonarSource/platform-onprem-squad
-SonarSource/sonar-xml,slack_notify.yml,@SonarSource/quality-jvm-squad
-SonarSource/sonar-db-copy,slack_notify.yml,@SonarSource/corpex-team
-SonarSource/sonar-rpg,slack_notify.yml,@SonarSource/security-engine-squad
-SonarSource/sonar-dummy,slack_notify.yml,* @sonarsource/platform-eng-xp-squad
-SonarSource/sonar-scanner-msbuild,SlackNotification.yml,@SonarSource/quality-dotnet-squad
-SonarSource/docker-sonarqube,slack_notify.yml,@SonarSource/platform-onprem-squad
-SonarSource/sonar-scanner-gradle,slack_notify.yml,@SonarSource/quality-jvm-squad
-SonarSource/orchestrator,slack_notify.yml,@SonarSource/platform-onprem-squad
-SonarSource/sonar-scanner-maven,slack_notify.yml,@SonarSource/quality-jvm-squad
-SonarSource/sonarlint-core,slack_notify.yml,@SonarSource/remediation-ide-experience-squad
-SonarSource/sonar-tsql,SlackNotification.yml,@SonarSource/quality-dotnet-squad
-SonarSource/sonar-security,slack_notify.yml,@SonarSource/security-engine-squad
-SonarSource/sonar-enterprise,slack_notify.yml,gradle.properties @SonarSource/platform-onprem-squad
-SonarSource/slang,slack_notify.yml,@SonarSource/quality-jvm-squad
-SonarSource/iris,slack_notify.yml,@SonarSource/platform-onprem-squad
-SonarSource/sonar-apex,slack_notify.yml,@SonarSource/quality-jvm-squad
-SonarSource/slang-enterprise,slack_notify.yml,@SonarSource/quality-jvm-squad
-SonarSource/sonarcloud-core-infra,slack_notify.yml,* @SonarSource/platform-cloud-squad
-SonarSource/sonarcloud-core,slack_notify.yml,@SonarSource/platform-cloud-squad
-SonarSource/next-infra,slack_notify.yml,@SonarSource/platform-onprem-squad
-SonarSource/dotnet-infra,SlackNotification.yml,*                                           @sonarsource/platform-eng-xp-squad
-SonarSource/sonar-dummy-js,slack_notify.yml,@sonarsource/platform-eng-xp-squad
-SonarSource/helm-chart-sonarqube,slack_notify.yml,@sonarsource/platform-onprem-squad
-SonarSource/sonar-kotlin,slack_notify.yml,@SonarSource/security-mobile-squad
-SonarSource/sonar-dataflow-bug-detection,slack_notify.yml,@SonarSource/quality-abd-squad
-SonarSource/sonar-dotnet-autoscan,SlackNotification.yml,@SonarSource/quality-dotnet-squad
-SonarSource/sonarcloud-certificates,slack_notify.yml,* @SonarSource/platform-cloud-squad
-SonarSource/sonar-cayc-stats-plugin,slack_notify.yml,@sonarsource/orchestration-workflow-squad
-SonarSource/sonarcloud-platform-connectivity,slack_notify.yml,
-SonarSource/sonarcloud-organizations,slack_notify.yml,@sonarsource/orchestration-reporting-squad
-SonarSource/differential-validation,slack-notify.yaml,@sonarsource/security-cloud-squad
-SonarSource/sonar-security-toolbox,slack_notify.yml,@SonarSource/security-engine-squad
-SonarSource/sonar-architecture,slack_notify.yml,@SonarSource/quality-architecture-squad
-SonarSource/sonarcloud-webapp,slack_notify.yml,@SonarSource/platform-front-end-eng-squad
-SonarSource/sonar-text-enterprise,slack-notify.yaml,@SonarSource/security-cloud-squad
-SonarSource/sonarcloud-orchestration-pipeline,slack_notify.yml,* @SonarSource/platform-cloud-squad
-SonarSource/sonar-jcl,slack_notify.yml,@SonarSource/quality-abd-squad
-SonarSource/pdf-reports-generation,slack_notify.yml,@sonarsource/orchestration-reporting-squad
-SonarSource/sonar-armor,slack_notify.yml,@sonarsource/security-engine-squad
-SonarSource/dotnet-ci-images,SlackNotification.yml,*                                                             @SonarSource/platform-eng-xp-squad
-SonarSource/sonar-pr-decoration,slack_notify.yml,@sonarsource/orchestration-workflow-squad
-SonarSource/sonar-ruby,slack_notify.yml,@SonarSource/quality-jvm-squad
-SonarSource/sonar-scala,slack_notify.yml,@SonarSource/quality-jvm-squad
-SonarSource/sonarcloud-fix-suggestions,SlackNotify.yml,@sonarsource/remediation-code-generation-squad
-SonarSource/sonar-iac-enterprise,slack-notify.yaml,@SonarSource/security-cloud-squad
-SonarSource/sonar-go-enterprise,slack_notify.yml,@SonarSource/security-cloud-squad
-SonarSource/sonar-dotnet-enterprise,SlackNotification.yml,@SonarSource/quality-dotnet-squad
-SonarSource/sonar-dummy-maven-enterprise,slack_notify.yml,* @sonarsource/platform-eng-xp-squad
-SonarSource/sonarqube-fix-suggestions,SlackNotify.yml,@sonarsource/remediation-code-generation-squad
-SonarSource/sonarcloud-software-quality-reports,slack_notify.yml,@sonarsource/orchestration-reporting-squad
-SonarSource/sonar-dummy-yarn,slack_notify.yml,@sonarsource/platform-eng-xp-squad
-SonarSource/sonarcloud-sdlc-data,slack-notifications.yaml,@sonarsource/orchestration-sdlc-squad
-SonarSource/sonar-fix-suggestions-evaluation-pipeline,SlackNotify.yml,@sonarsource/remediation-code-generation-squad
+repository,workflow,slack_channel,codeowners
+SonarSource/sonar-scanner-jenkins,slack_notify.yml,squad-workflow-standards-build-errors,.github/CODEOWNERS @sonarsource/orchestration-workflow-squad
+SonarSource/sonar-php,slack-notify.yaml,squad-security-cloud-notifs,.github/CODEOWNERS @SonarSource/security-cloud-squad
+SonarSource/sonar-abap,slack_notify.yml,squad-security-taint-notifs,.github/CODEOWNERS @SonarSource/security-engine-squad
+SonarSource/sonar-cobol,slack_notify.yml,squad-abd,.github/CODEOWNERS @SonarSource/quality-abd-squad
+SonarSource/sonar-plsql,SlackNotification.yml,team-analysis-plsql,.github/CODEOWNERS @SonarSource/quality-dotnet-squad
+SonarSource/sonar-vb,SlackNotification.yml,team-analysis-vb6,.github/CODEOWNERS @SonarSource/quality-dotnet-squad
+SonarSource/sonar-java,slack_notify.yml,squad-jvm-notifs,.github/CODEOWNERS @SonarSource/quality-jvm-squad
+SonarSource/sonar-pli,slack_notify.yml,squad-security-taint-notifs,.github/CODEOWNERS @SonarSource/security-engine-squad
+SonarSource/sonar-cpp,slack_notify.yml,squad-cfamily,.github/CODEOWNERS @sonarsource/quality-cfamily-squad
+SonarSource/sonar-update-center,slack_notify.yml,squad-sq-platform-build-notification,.github/CODEOWNERS @SonarSource/platform-onprem-squad
+SonarSource/sonar-xml,slack_notify.yml,squad-jvm-notifs,.github/CODEOWNERS @SonarSource/quality-jvm-squad
+SonarSource/sonar-db-copy,slack_notify.yml,team-corpex-build-notifications,.github/CODEOWNERS @SonarSource/corpex-team
+SonarSource/sonar-rpg,slack_notify.yml,squad-security-taint-notifs,.github/CODEOWNERS @SonarSource/security-engine-squad
+SonarSource/sonar-dummy,slack_notify.yml,squad-eng-xp-github,* @sonarsource/platform-eng-xp-squad
+SonarSource/sonar-scanner-msbuild,SlackNotification.yml,squad-dotnet-s4net,.github/CODEOWNERS @SonarSource/quality-dotnet-squad
+SonarSource/docker-sonarqube,slack_notify.yml,squad-sq-platform-build-notification,.github/CODEOWNERS @SonarSource/platform-onprem-squad
+SonarSource/sonar-scanner-gradle,slack_notify.yml,squad-jvm-notifs,.github/CODEOWNERS @SonarSource/quality-jvm-squad
+SonarSource/orchestrator,slack_notify.yml,squad-sq-platform-build-notification,.github/CODEOWNERS @SonarSource/platform-onprem-squad
+SonarSource/sonar-scanner-maven,slack_notify.yml,squad-jvm-notifs,.github/CODEOWNERS @SonarSource/quality-jvm-squad
+SonarSource/sonarlint-core,slack_notify.yml,squad-ide-slcore-bots,.github/CODEOWNERS @SonarSource/remediation-ide-experience-squad
+SonarSource/sonar-tsql,SlackNotification.yml,team-analysis-tsql,.github/CODEOWNERS @SonarSource/quality-dotnet-squad
+SonarSource/sonar-security,slack_notify.yml,squad-security-taint-notifs,.github/CODEOWNERS @SonarSource/security-engine-squad
+SonarSource/sonar-enterprise,slack_notify.yml,squad-sq-platform-build-notification,gradle.properties @SonarSource/platform-onprem-squad
+SonarSource/slang,slack_notify.yml,squad-jvm-notifs,.github/CODEOWNERS @SonarSource/quality-jvm-squad
+SonarSource/iris,slack_notify.yml,squad-sq-platform-build-notification,.github/CODEOWNERS @SonarSource/platform-onprem-squad
+SonarSource/sonar-apex,slack_notify.yml,squad-jvm-notifs,.github/CODEOWNERS @SonarSource/quality-jvm-squad
+SonarSource/slang-enterprise,slack_notify.yml,squad-jvm-notifs,.github/CODEOWNERS @SonarSource/quality-jvm-squad
+SonarSource/sonarcloud-core-infra,slack_notify.yml,ops-sonarcloud-platform,* @SonarSource/platform-cloud-squad
+SonarSource/sonarcloud-core,slack_notify.yml,ops-repo-sonarcloud-core,.github/CODEOWNERS @SonarSource/platform-cloud-squad
+SonarSource/next-infra,slack_notify.yml,squad-sq-platform-build-notification,.github/CODEOWNERS @SonarSource/platform-onprem-squad
+SonarSource/dotnet-infra,SlackNotification.yml,squad-dotnet,*                                           @sonarsource/platform-eng-xp-squad
+SonarSource/sonar-dummy-js,slack_notify.yml,squad-dev-infra-github,.github/CODEOWNERS @sonarsource/platform-eng-xp-squad
+SonarSource/helm-chart-sonarqube,slack_notify.yml,squad-sq-platform-build-notification,.github/CODEOWNERS @sonarsource/platform-onprem-squad
+SonarSource/sonar-kotlin,slack_notify.yml,squad-mobile,.github/CODEOWNERS @SonarSource/security-mobile-squad
+SonarSource/sonar-dataflow-bug-detection,slack_notify.yml,squad-abd,.github/CODEOWNERS @SonarSource/quality-abd-squad
+SonarSource/sonar-dotnet-autoscan,SlackNotification.yml,squad-dotnet-autoscan,.github/CODEOWNERS @SonarSource/quality-dotnet-squad
+SonarSource/sonarcloud-certificates,slack_notify.yml,ops-sonarcloud-platform,* @SonarSource/platform-cloud-squad
+SonarSource/sonar-cayc-stats-plugin,slack_notify.yml,squad-workflow-standards-build-errors,.github/CODEOWNERS @sonarsource/orchestration-workflow-squad
+SonarSource/sonarcloud-platform-connectivity,slack_notify.yml,ops-sonarcloud-platform,
+SonarSource/sonarcloud-organizations,slack_notify.yml,team-corpex-build-notifications,.github/CODEOWNERS @sonarsource/orchestration-reporting-squad
+SonarSource/differential-validation,slack-notify.yaml,squad-security-cloud-notifs,.github/CODEOWNERS @sonarsource/security-cloud-squad
+SonarSource/sonar-security-toolbox,slack_notify.yml,squad-security-taint-notifs,.github/CODEOWNERS @SonarSource/security-engine-squad
+SonarSource/sonar-architecture,slack_notify.yml,squad-architecture-notifs,.github/CODEOWNERS @SonarSource/quality-architecture-squad
+SonarSource/sonarcloud-webapp,slack_notify.yml,ops-sonarcloud-webapp,.github/CODEOWNERS @SonarSource/platform-front-end-eng-squad
+SonarSource/sonar-text-enterprise,slack-notify.yaml,squad-security-cloud-notifs,.github/CODEOWNERS @SonarSource/security-cloud-squad
+SonarSource/sonarcloud-orchestration-pipeline,slack_notify.yml,ops-sonarcloud-platform,* @SonarSource/platform-cloud-squad
+SonarSource/sonar-jcl,slack_notify.yml,squad-abd,.github/CODEOWNERS @SonarSource/quality-abd-squad
+SonarSource/pdf-reports-generation,slack_notify.yml,team-corpex-build-notifications,.github/CODEOWNERS @sonarsource/orchestration-reporting-squad
+SonarSource/sonar-armor,slack_notify.yml,squad-security-taint-notifs,.github/CODEOWNERS @sonarsource/security-engine-squad
+SonarSource/dotnet-ci-images,SlackNotification.yml,squad-dotnet,*                                                             @SonarSource/platform-eng-xp-squad
+SonarSource/sonar-pr-decoration,slack_notify.yml,squad-workflow-standards-build-errors,.github/CODEOWNERS @sonarsource/orchestration-workflow-squad
+SonarSource/sonar-ruby,slack_notify.yml,squad-jvm-notifs,.github/CODEOWNERS @SonarSource/quality-jvm-squad
+SonarSource/sonar-scala,slack_notify.yml,squad-jvm-notifs,.github/CODEOWNERS @SonarSource/quality-jvm-squad
+SonarSource/sonarcloud-fix-suggestions,SlackNotify.yml,squad-code-generation-build-notification,.github/CODEOWNERS @sonarsource/remediation-code-generation-squad
+SonarSource/sonar-iac-enterprise,slack-notify.yaml,squad-security-cloud-notifs,.github/CODEOWNERS @SonarSource/security-cloud-squad
+SonarSource/sonar-go-enterprise,slack_notify.yml,squad-security-cloud-notifs,.github/CODEOWNERS @SonarSource/security-cloud-squad
+SonarSource/sonar-dotnet-enterprise,SlackNotification.yml,squad-dotnet,.github/CODEOWNERS @SonarSource/quality-dotnet-squad
+SonarSource/sonar-dummy-maven-enterprise,slack_notify.yml,squad-dev-infra-github,* @sonarsource/platform-eng-xp-squad
+SonarSource/sonarqube-fix-suggestions,SlackNotify.yml,squad-code-generation-build-notification,.github/CODEOWNERS @sonarsource/remediation-code-generation-squad
+SonarSource/sonarcloud-software-quality-reports,slack_notify.yml,team-corpex-build-notifications,.github/CODEOWNERS @sonarsource/orchestration-reporting-squad
+SonarSource/sonar-dummy-yarn,slack_notify.yml,squad-dev-infra-github,.github/CODEOWNERS @sonarsource/platform-eng-xp-squad
+SonarSource/sonarcloud-sdlc-data,slack-notifications.yaml,squad-sdlc-data-notifs,.github/CODEOWNERS @sonarsource/orchestration-sdlc-squad
+SonarSource/sonar-fix-suggestions-evaluation-pipeline,SlackNotify.yml,squad-code-generation-build-notification,.github/CODEOWNERS @sonarsource/remediation-code-generation-squad
