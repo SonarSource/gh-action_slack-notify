@@ -3,6 +3,7 @@ from github import Github
 import csv
 import base64
 import time  # Import the time module
+import re
 
 def get_github_token():
     github_token = os.getenv('GITHUB_TOKEN')
@@ -19,6 +20,13 @@ def get_first_non_comment_line(content):
 
 def find_action_in_workflow(workflow_content, action_name):
     return action_name in workflow_content
+
+def extract_slack_channel(workflow_content):
+    # Use regex to find the slack_channel value
+    match = re.search(r"slackChannel:\s*['\"]?([#\w-]+)['\"]?", workflow_content)
+    if match:
+        return match.group(1)
+    return None
 
 def main():
     github_token = get_github_token()
@@ -56,6 +64,7 @@ def main():
                     if workflow_file.type == 'file':
                         workflow_content = workflow_file.decoded_content.decode('utf-8')
                         if find_action_in_workflow(workflow_content, action_name):
+                            slack_channel = extract_slack_channel(workflow_content)
                             try:
                                 codeowners_file = repo.get_contents(".github/CODEOWNERS")
                                 codeowners_content = codeowners_file.decoded_content.decode('utf-8')
@@ -66,10 +75,11 @@ def main():
                             result = {
                                 'repository': repo.full_name,
                                 'workflow': workflow_file.name,
-                                'codeowners': first_non_comment_line
+                                'codeowners': first_non_comment_line,
+                                'slack_channel': slack_channel
                             }
                             results.append(result)
-                            print(f"Repository: {repo.full_name}, Workflow: {workflow_file.name}, CODEOWNERS: {first_non_comment_line}")
+                            print(f"Repository: {repo.full_name}, Workflow: {workflow_file.name}, Slack Channel: {slack_channel}, CODEOWNERS: {first_non_comment_line}")
                     else:
                         print(f"Skipping non-file item: {workflow_file.name} in {repo.full_name}")
                 except Exception as e:
@@ -81,7 +91,7 @@ def main():
 
     # Write results to CSV file
     with open('migration_report.csv', 'w', newline='') as csvfile:
-        fieldnames = ['repository', 'workflow', 'codeowners']
+        fieldnames = ['repository', 'workflow', 'slack_channel', 'codeowners']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
         writer.writeheader()
