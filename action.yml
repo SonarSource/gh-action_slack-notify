@@ -26,10 +26,17 @@ runs:
       uses: actions/setup-python@42375524e23c412d93fb67b49958b491fce71c38 # v5.4.0
       with:
         python-version-file: ${{ github.action_path }}/pyproject.toml
-        cache: 'poetry'
+        # Remove cache: 'poetry'
+
+    - name: Cache Poetry dependencies
+      uses: actions/cache@v3
+      id: poetry-cache
+      with:
+        path: ${{ github.action_path }}/.venv
+        key: poetry
 
     - name: Install dependencies
-      run: poetry install
+      run: poetry install -C ${{ github.action_path }} --no-interaction --no-root
       shell: bash
 
     - name: Run main.py
@@ -40,7 +47,7 @@ runs:
         GITHUB_CHECK_SUITE_ID: ${{ !env.ACT && github.event.check_suite.id || env.GITHUB_CHECK_SUITE_ID }}
         GITHUB_REPOSITORY: ${{ !env.ACT && github.repository || env.GITHUB_REPOSITORY }}
       run: |
-        poetry run python ${{ github.action_path }}/src/main.py
+        poetry run -C ${{ github.action_path }} python ${{ github.action_path }}/src/main.py
       shell: bash
 
     - name: Send Slack Notification
