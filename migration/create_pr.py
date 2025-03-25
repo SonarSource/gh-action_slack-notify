@@ -28,7 +28,6 @@ jobs:
         with:
           slackChannel: {slack_channel}
           slack_webhook_secret: ${{ secrets.SLACK_WEBHOOK }}
-
 """
     try:
         # Get the default branch
