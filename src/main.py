@@ -36,8 +36,12 @@ def get_github_user_by_id(github_actor_id: str) -> NamedUser:
     return github.get_user_by_id(int(github_actor_id))
 
 
-def get_slack_user_by_name(first_name: str, last_name: str):
+def get_slack_user_by_name(github_user: NamedUser):
     """Get the Slack user for a given user name."""
+    if github_user.name is None:
+        return None
+
+    first_name, last_name = github_user.name.split(' ')
     logging.info(f"Getting Slack user by name: {first_name} {last_name}")
     client = WebClient(token=os.environ.get('SLACK_TOKEN'))
 
@@ -107,11 +111,11 @@ def main():
     try:
         repo = get_repo(repository)
         github_user = get_github_user_by_id(github_actor_id)
-        first_name, last_name = github_user.name.split(' ')
-        slack_user = get_slack_user_by_name(first_name, last_name)
+        slack_user = get_slack_user_by_name(github_user)
         check_suite = repo.get_check_suite(int(check_suite_id))
         failed_check_runs = get_failed_check_runs(check_suite)
         attachments = create_slack_attachments(failed_check_runs, repo.full_name, slack_user['id'])
+        logging.info(f"Slack attachments: {attachments}")
         with open(os.environ.get('GITHUB_OUTPUT'), 'a') as github_output:
             github_output.write(f"attachments={attachments}\n")
         sys.exit(0)
