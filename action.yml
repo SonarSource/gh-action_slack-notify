@@ -38,7 +38,7 @@ runs:
         SLACK_TOKEN: ${{ !env.ACT && fromJSON(steps.secrets.outputs.vault).slack_token || env.SLACK_TOKEN }}
         GITHUB_ACTOR_ID: ${{ !env.ACT && github.actor_id || env.GITHUB_ACTOR_ID }}
         GITHUB_CHECK_SUITE_ID: ${{ !env.ACT && github.event.check_suite.id || env.GITHUB_CHECK_SUITE_ID }}
-        GITHUB_REPOSITORY: ${{ github.repository }}
+        GITHUB_REPOSITORY: ${{ !env.ACT && github.repository || env.GITHUB_REPOSITORY }}
       run: |
         poetry run python ${{ github.action_path }}/src/main.py
       shell: bash
@@ -52,4 +52,4 @@ runs:
         payload: |
           channel: "${{ inputs.slackChannel }}"
           text: "build failed"
-          attachments: "${{ fromJSON(steps.main.outputs.attachments) }}"
+          attachments: "${{ steps.main.outputs.attachments }}"

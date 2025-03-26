@@ -6,6 +6,7 @@ from unittest.mock import patch
 
 import pytest
 from github import Repository
+from github.NamedUser import NamedUser
 from slack_sdk.errors import SlackApiError
 
 from src.main import create_slack_attachments
@@ -72,15 +73,19 @@ class TestAction(unittest.TestCase):
     def test_get_slack_user_by_name(self, mock_slack):
         mock_slack.return_value.users_list.return_value = {
             "members": [{"profile": {"first_name": "John", "last_name": "Doe"}}]}
-        user = get_slack_user_by_name("John", "Doe")
-        self.assertEqual(user, {"profile": {"first_name": "John", "last_name": "Doe"}})
+        github_user = MagicMock(spec=NamedUser)
+        github_user.name = "John Doe"
+        user = get_slack_user_by_name(github_user)
+        self.assertEqual(user, {'profile': {'first_name': 'John', 'last_name': 'Doe'}})
 
     @patch.dict(os.environ, {"SLACK_TOKEN": "test_token"})
     @patch("src.main.WebClient")
     def test_get_slack_user_by_name_not_found(self, mock_slack):
         mock_slack.return_value.users_list.return_value = {
             "members": [{"profile": {"first_name": "John", "last_name": "Doe"}}]}
-        user = get_slack_user_by_name("Jane", "Smith")
+        github_user = MagicMock(spec=NamedUser)
+        github_user.name = "Jane Smith"
+        user = get_slack_user_by_name(github_user)
         self.assertIsNone(user)
 
     @patch.dict(os.environ, {"SLACK_TOKEN": "test_token"})
@@ -90,8 +95,9 @@ class TestAction(unittest.TestCase):
             response=MagicMock(status_code=500, data={"ok": False, "error": "internal_error"}),
             message="Slack API Error"
         )
-
+        github_user = MagicMock(spec=NamedUser)
+        github_user.name = "Jane Smith"
         with pytest.raises(SystemExit) as excinfo:
-            get_slack_user_by_name("Jane", "Smith")
+            get_slack_user_by_name(github_user)
 
         assert excinfo.value.code == 1
