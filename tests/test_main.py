@@ -1,4 +1,3 @@
-import json
 import os
 import unittest
 from unittest.mock import MagicMock
@@ -14,6 +13,7 @@ from src.main import get_failed_check_runs
 from src.main import get_github_user_by_id
 from src.main import get_repo
 from src.main import get_slack_user_by_name
+from src.main import post_message
 
 
 class TestAction(unittest.TestCase):
@@ -41,8 +41,7 @@ class TestAction(unittest.TestCase):
         check_runs[0].conclusion = "failure"
         check_runs[1].conclusion = "success"
         attachments = create_slack_attachments(check_runs, "repo", "user")
-        payload = json.loads(attachments)
-        self.assertEqual(len(payload), 2)
+        self.assertEqual(len(attachments), 2)
 
     def test_get_failed_check_runs(self):
         check_suite = MagicMock()
@@ -101,3 +100,13 @@ class TestAction(unittest.TestCase):
             get_slack_user_by_name(github_user)
 
         assert excinfo.value.code == 1
+
+    @patch.dict(os.environ, {"SLACK_TOKEN": "test_token"})
+    @patch("src.main.WebClient")
+    def test_post_message(self, mock_slack):
+        mock_slack.return_value.chat_postMessage.return_value = {"ok": True}
+        attachments = [{"text": "Test attachment"}]
+        post_message("test_channel", attachments)
+        mock_slack.return_value.chat_postMessage.assert_called_once_with(
+            channel="test_channel", text="Failed check runs", attachments=attachments
+        )
