@@ -42,6 +42,7 @@ runs:
     - name: Run main.py
       id: main
       env:
+        SLACK_CHANNEL: "${{ inputs.slackChannel }}"
         SLACK_TOKEN: ${{ !env.ACT && fromJSON(steps.secrets.outputs.vault).slack_token || env.SLACK_TOKEN }}
         GITHUB_ACTOR_ID: ${{ !env.ACT && github.actor_id || env.GITHUB_ACTOR_ID }}
         GITHUB_CHECK_SUITE_ID: ${{ !env.ACT && github.event.check_suite.id || env.GITHUB_CHECK_SUITE_ID }}
@@ -49,14 +50,3 @@ runs:
       run: |
         poetry run -C ${{ github.action_path }} python ${{ github.action_path }}/src/main.py
       shell: bash
-
-    - name: Send Slack Notification
-      if: fromJSON(steps.main.outputs.attachments)[0] != null
-      uses: slackapi/slack-github-action@485a9d42d3a73031f12ec201c457e2162c45d02d # v2.0.0
-      with:
-        method: chat.postMessage
-        token: ${{ !env.ACT && fromJSON(steps.secrets.outputs.vault).slack_token || env.SLACK_TOKEN }}
-        payload: |
-          channel: "${{ inputs.slackChannel }}"
-          text: "build failed"
-          attachments: "${{ steps.main.outputs.attachments }}"

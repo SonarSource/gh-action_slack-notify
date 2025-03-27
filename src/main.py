@@ -1,4 +1,3 @@
-import json
 import logging
 import os
 import sys
@@ -60,7 +59,7 @@ def get_slack_user_by_name(github_user: NamedUser):
 
 def create_slack_attachments(check_runs: List[CheckRun],
                              repository_name: str,
-                             slack_user_id: str) -> str:
+                             slack_user_id: str) -> List:
     """Create Slack attachments for failed check runs and a given repository
     and a given Slack user."""
     attachments = []
@@ -99,13 +98,29 @@ def create_slack_attachments(check_runs: List[CheckRun],
             ],
         }
         attachments.append(attachment)
-    return json.dumps(attachments)
+    logging.info(f"Slack attachments: {attachments}")
+    return attachments
+
+
+def post_message(channel: str, attachments: List):
+    client = WebClient(token=os.environ.get('SLACK_TOKEN'))
+
+    if len(attachments) == 0:
+        return
+
+    try:
+        result = client.chat_postMessage(channel=channel, text="Failed check runs", attachments=attachments)
+        logging.info(f"Message sent: {result}")
+    except SlackApiError as e:
+        logging.error(f"Error posting message: {e.response}")
+        sys.exit(1)
 
 
 def main():
     check_suite_id = os.environ.get('GITHUB_CHECK_SUITE_ID')
     repository = os.environ.get('GITHUB_REPOSITORY')
     github_actor_id = os.environ.get('GITHUB_ACTOR_ID')
+    slack_channel = os.environ.get('SLACK_CHANNEL')
 
     logging.info(f"Retrieving failed check runs for {repository} and check suite ID: {check_suite_id}")
     try:
@@ -114,10 +129,8 @@ def main():
         slack_user = get_slack_user_by_name(github_user)
         check_suite = repo.get_check_suite(int(check_suite_id))
         failed_check_runs = get_failed_check_runs(check_suite)
-        attachments = create_slack_attachments(failed_check_runs, repo.full_name, slack_user['id'])
-        logging.info(f"Slack attachments: {attachments}")
-        with open(os.environ.get('GITHUB_OUTPUT'), 'a') as github_output:
-            github_output.write(f"attachments={attachments}\n")
+        attachments = create_slack_attachments(failed_check_runs, repo.full_name, slack_user["id"] if slack_user else "")
+        post_message(slack_channel, attachments)
         sys.exit(0)
     except GithubException as e:
         logging.error(f"Error: {e}")
