@@ -1,6 +1,7 @@
 import logging
 import os
 import sys
+import time
 from typing import List
 
 from github import Github
@@ -35,6 +36,14 @@ def get_github_user_by_id(github_actor_id: str) -> NamedUser:
     return github.get_user_by_id(int(github_actor_id))
 
 
+def find_slack_user(users_list: List, first_name: str, last_name: str):
+    for user in users_list:
+        profile = user["profile"]
+        if profile.get("first_name", "") == first_name and profile.get("last_name", "") == last_name:
+            return user
+    return None
+
+
 def get_slack_user_by_name(github_user: NamedUser):
     """Get the Slack user for a given user name."""
     if github_user.name is None:
@@ -47,14 +56,17 @@ def get_slack_user_by_name(github_user: NamedUser):
     try:
         logging.info("Listing Slack users")
         users = client.users_list()
-        for user in users["members"]:
-            profile = user["profile"]
-            if profile.get("first_name", "") == first_name and profile.get("last_name", "") == last_name:
-                return user
-        return None
+        return find_slack_user(users["members"], first_name, last_name)
     except SlackApiError as e:
-        logging.error(f"Error listing Slack users: {e.response}")
-        sys.exit(1)
+        if e.response.status_code == 429:
+            delay = int(e.response.headers["Retry-After"])
+            logging.info(f"Rate limited. Retrying in {delay} seconds.")
+            time.sleep(delay)
+            users = client.users_list()
+            return find_slack_user(users["members"], first_name, last_name)
+        else:
+            logging.error(f"Error listing Slack users: {e.response}")
+            sys.exit(1)
 
 
 def create_slack_attachments(check_runs: List[CheckRun],
@@ -112,8 +124,15 @@ def post_message(channel: str, attachments: List):
         result = client.chat_postMessage(channel=channel, text="Failed check runs", attachments=attachments)
         logging.info(f"Message sent: {result}")
     except SlackApiError as e:
-        logging.error(f"Error posting message: {e.response}")
-        sys.exit(1)
+        if e.response.status_code == 429:
+            delay = int(e.response.headers["Retry-After"])
+            logging.info(f"Rate limited. Retrying in {delay} seconds.")
+            time.sleep(delay)
+            result = client.chat_postMessage(channel=channel, text="Failed check runs", attachments=attachments)
+            logging.info(f"Message sent: {result}")
+        else:
+            logging.error(f"Error posting message: {e.response}")
+            sys.exit(1)
 
 
 def main():

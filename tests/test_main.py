@@ -103,6 +103,18 @@ class TestAction(unittest.TestCase):
 
     @patch.dict(os.environ, {"SLACK_TOKEN": "test_token"})
     @patch("src.main.WebClient")
+    def test_get_slack_user_by_name_ratelimit(self, mock_slack):
+        mock_slack.return_value.users_list.side_effect = [SlackApiError(
+            response=MagicMock(status_code=429, headers={"Retry-After": 1}),
+            message="Rate limited"
+        ), {"members": [{"profile": {"first_name": "John", "last_name": "Doe"}}]}]
+        github_user = MagicMock(spec=NamedUser)
+        github_user.name = "John Doe"
+        get_slack_user_by_name(github_user)
+        assert mock_slack.return_value.users_list.call_count == 2
+
+    @patch.dict(os.environ, {"SLACK_TOKEN": "test_token"})
+    @patch("src.main.WebClient")
     def test_post_message(self, mock_slack):
         mock_slack.return_value.chat_postMessage.return_value = {"ok": True}
         attachments = [{"text": "Test attachment"}]
@@ -110,3 +122,25 @@ class TestAction(unittest.TestCase):
         mock_slack.return_value.chat_postMessage.assert_called_once_with(
             channel="test_channel", text="Failed check runs", attachments=attachments
         )
+
+    @patch.dict(os.environ, {"SLACK_TOKEN": "test_token"})
+    @patch("src.main.WebClient")
+    def test_post_message_with_ratelimit(self, mock_slack):
+        mock_slack.return_value.chat_postMessage.side_effect = [SlackApiError(
+            response=MagicMock(status_code=429, headers={"Retry-After": 1}),
+            message="Rate limited"
+        ), {"ok": True}]
+        attachments = [{"text": "Test attachment"}]
+        post_message("test_channel", attachments)
+        assert mock_slack.return_value.chat_postMessage.call_count == 2
+        mock_slack.return_value.chat_postMessage.assert_called_with(
+            channel="test_channel", text="Failed check runs", attachments=attachments
+        )
+
+        with patch('time.sleep') as mock_sleep:
+            mock_slack.return_value.chat_postMessage.side_effect = [SlackApiError(
+                response=MagicMock(status_code=429, headers={"Retry-After": 1}),
+                message="Rate limited"
+            ), {"ok": True}]
+            post_message("test_channel", attachments)
+            mock_sleep.assert_called_once_with(1)
