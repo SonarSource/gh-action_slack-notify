@@ -1,22 +1,13 @@
 # Slack Notification Action
 
-This repository contains a reusable GitHub Action for sending build failure notifications to a Slack channel using a webhook.
-This action should be called in a github workflow triggered by a check-run [completed] event.
+This repository aim to provide a GitHub Action for sending build failure notifications to a Slack channel.
+This action should be called in a GitHub Workflow triggered by a check-suite [completed] event.
 
 ## Inputs
 
 The action accepts the following inputs:
 
-- `slack_channel`: The Slack channel to which the notification will be sent. This input is required.
-
-## Enabled branches
-
-By default Slack notifications are enabled for all branches, they can be restricted in your workflow to
-
-- master
-- main
-- dogfood-\*
-- branch-\*
+- `slackChannel`: The Slack channel to which the notification will be sent. This input is required.
 
 ## Requirements
 
@@ -24,7 +15,7 @@ The repository needs to be onboarded to [Vault](https://xtranet-sonarsource.atla
 
 ## Usage
 
-Here is an example of how to trigger the action on check suite completion for the specified branches only:
+Here is an example of how to trigger the action on check suite completion for the protected branches only:
 
 ```yaml
 ---
@@ -49,13 +40,13 @@ jobs:
           startsWith(github.base_ref, 'dogfood-')
         env:
           GITHUB_TOKEN: ${{ github.token }}
-        uses: SonarSource/gh-action_slack-notify@master
+        uses: SonarSource/gh-action_slack-notify@1.0.0
         with:
-          slackChannel: #channel_name
+          slackChannel: channel_name
 ```
 
 ## Releases
 
-To create a new release,
+To create a new release:
 
-1. Draft a new release from Github releases page with the next semantic version.
+1. Draft a new release from GitHub releases page with the next semantic version.
