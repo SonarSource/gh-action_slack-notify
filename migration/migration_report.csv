@@ -30,7 +30,6 @@ SonarSource/sonarcloud-core-infra,slack_notify.yml,ops-sonarcloud-platform,* @So
 SonarSource/sonarcloud-core,slack_notify.yml,ops-repo-sonarcloud-core,.github/CODEOWNERS @SonarSource/platform-cloud-squad
 SonarSource/next-infra,slack_notify.yml,squad-sq-platform-build-notification,.github/CODEOWNERS @SonarSource/platform-onprem-squad
 SonarSource/dotnet-infra,SlackNotification.yml,squad-dotnet,*                                           @sonarsource/platform-eng-xp-squad
-SonarSource/sonar-dummy-js,slack_notify.yml,squad-dev-infra-github,.github/CODEOWNERS @sonarsource/platform-eng-xp-squad
 SonarSource/helm-chart-sonarqube,slack_notify.yml,squad-sq-platform-build-notification,.github/CODEOWNERS @sonarsource/platform-onprem-squad
 SonarSource/sonar-kotlin,slack_notify.yml,squad-mobile,.github/CODEOWNERS @SonarSource/security-mobile-squad
 SonarSource/sonar-dataflow-bug-detection,slack_notify.yml,squad-abd,.github/CODEOWNERS @SonarSource/quality-abd-squad
@@ -59,6 +58,5 @@ SonarSource/sonar-dotnet-enterprise,SlackNotification.yml,squad-dotnet,.github/C
 SonarSource/sonar-dummy-maven-enterprise,slack_notify.yml,squad-dev-infra-github,* @sonarsource/platform-eng-xp-squad
 SonarSource/sonarqube-fix-suggestions,SlackNotify.yml,squad-code-generation-build-notification,.github/CODEOWNERS @sonarsource/remediation-code-generation-squad
 SonarSource/sonarcloud-software-quality-reports,slack_notify.yml,team-corpex-build-notifications,.github/CODEOWNERS @sonarsource/orchestration-reporting-squad
-SonarSource/sonar-dummy-yarn,slack_notify.yml,squad-dev-infra-github,.github/CODEOWNERS @sonarsource/platform-eng-xp-squad
 SonarSource/sonarcloud-sdlc-data,slack-notifications.yaml,squad-sdlc-data-notifs,.github/CODEOWNERS @sonarsource/orchestration-sdlc-squad
 SonarSource/sonar-fix-suggestions-evaluation-pipeline,SlackNotify.yml,squad-code-generation-build-notification,.github/CODEOWNERS @sonarsource/remediation-code-generation-squad
