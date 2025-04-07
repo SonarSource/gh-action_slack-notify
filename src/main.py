@@ -49,6 +49,9 @@ def get_slack_user_by_name(github_user: NamedUser):
     if github_user.name is None:
         return None
 
+    if len(github_user.name.split(' ')) != 2:
+        return None
+
     first_name, last_name = github_user.name.split(' ')
     logging.info(f"Getting Slack user by name: {first_name} {last_name}")
     client = WebClient(token=os.environ.get('SLACK_TOKEN'))
