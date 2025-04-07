@@ -5,14 +5,12 @@ from unittest.mock import patch
 
 import pytest
 from github import Repository
-from github.NamedUser import NamedUser
 from slack_sdk.errors import SlackApiError
 
 from src.main import create_slack_attachments
 from src.main import get_failed_check_runs
-from src.main import get_github_user_by_id
 from src.main import get_repo
-from src.main import get_slack_user_by_name
+from src.main import get_slack_user_by_email
 from src.main import post_message
 
 
@@ -26,15 +24,6 @@ class TestAction(unittest.TestCase):
         self.assertEqual(repo, mock_repo)
         mock_github.return_value.get_repo.assert_called_once_with(
             "SonarSource/gh-action_slack-notify")
-
-    @patch.dict(os.environ, {"GITHUB_TOKEN": "test_token"})
-    @patch("src.main.Github")
-    def test_get_github_user_by_id(self, mock_github):
-        mock_user = MagicMock()
-        mock_github.return_value.get_user_by_id.return_value = mock_user
-        user = get_github_user_by_id("123")
-        self.assertEqual(user, mock_user)
-        mock_github.return_value.get_user_by_id.assert_called_once_with(123)
 
     def test_create_slack_attachments(self):
         check_runs = [MagicMock(), MagicMock()]
@@ -71,20 +60,16 @@ class TestAction(unittest.TestCase):
     @patch("src.main.WebClient")
     def test_get_slack_user_by_name(self, mock_slack):
         mock_slack.return_value.users_list.return_value = {
-            "members": [{"profile": {"first_name": "John", "last_name": "Doe"}}]}
-        github_user = MagicMock(spec=NamedUser)
-        github_user.name = "John Doe"
-        user = get_slack_user_by_name(github_user)
-        self.assertEqual(user, {'profile': {'first_name': 'John', 'last_name': 'Doe'}})
+            "members": [{"profile": {"email": "john.doe@sonarsource.com"}}]}
+        user = get_slack_user_by_email("john.doe@sonarsource.com")
+        self.assertEqual(user, {'profile': {'email': 'john.doe@sonarsource.com'}})
 
     @patch.dict(os.environ, {"SLACK_TOKEN": "test_token"})
     @patch("src.main.WebClient")
     def test_get_slack_user_by_name_not_found(self, mock_slack):
         mock_slack.return_value.users_list.return_value = {
-            "members": [{"profile": {"first_name": "John", "last_name": "Doe"}}]}
-        github_user = MagicMock(spec=NamedUser)
-        github_user.name = "Jane Smith"
-        user = get_slack_user_by_name(github_user)
+            "members": [{"profile": {"email": "john.doe@sonarsource.com"}}]}
+        user = get_slack_user_by_email("jane.smith@sonarsource.com")
         self.assertIsNone(user)
 
     @patch.dict(os.environ, {"SLACK_TOKEN": "test_token"})
@@ -94,10 +79,8 @@ class TestAction(unittest.TestCase):
             response=MagicMock(status_code=500, data={"ok": False, "error": "internal_error"}),
             message="Slack API Error"
         )
-        github_user = MagicMock(spec=NamedUser)
-        github_user.name = "Jane Smith"
         with pytest.raises(SystemExit) as excinfo:
-            get_slack_user_by_name(github_user)
+            get_slack_user_by_email("jane.smith@sonarsource.com")
 
         assert excinfo.value.code == 1
 
@@ -107,10 +90,8 @@ class TestAction(unittest.TestCase):
         mock_slack.return_value.users_list.side_effect = [SlackApiError(
             response=MagicMock(status_code=429, headers={"Retry-After": 1}),
             message="Rate limited"
-        ), {"members": [{"profile": {"first_name": "John", "last_name": "Doe"}}]}]
-        github_user = MagicMock(spec=NamedUser)
-        github_user.name = "John Doe"
-        get_slack_user_by_name(github_user)
+        ), {"members": [{"profile": {"email": "john.doe@sonarsource.com"}}]}]
+        get_slack_user_by_email("john.doe@sonarsource.com")
         assert mock_slack.return_value.users_list.call_count == 2
 
     @patch.dict(os.environ, {"SLACK_TOKEN": "test_token"})

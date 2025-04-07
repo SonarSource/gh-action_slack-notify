@@ -34,15 +34,22 @@ jobs:
     steps:
       - name: Send Slack Notification
         if: |
-          github.base_ref == 'main' ||
-          github.base_ref == 'master' ||
-          startsWith(github.base_ref, 'branch-') ||
-          startsWith(github.base_ref, 'dogfood-')
+          contains(fromJSON('["main", "master"]'), github.event.check_suite.head_branch) ||
+          startsWith(github.event.check_suite.head_branch, 'dogfood-') ||
+          startsWith(github.event.check_suite.head_branch, 'branch-')
         env:
           GITHUB_TOKEN: ${{ github.token }}
         uses: SonarSource/gh-action_slack-notify@1.0.0
         with:
           slackChannel: channel_name
+```
+
+## Test the action locally
+
+Install [act](https://nektosact.com/installation/index.html) then run:
+
+```bash
+act --pull=false -P sonar-runner=catthehacker/ubuntu:full-latest -j build -e event.json
 ```
 
 ## Releases
