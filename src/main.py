@@ -8,13 +8,24 @@ from github import Github
 from github import GithubException
 from github.CheckRun import CheckRun
 from github.CheckSuite import CheckSuite
-from github.NamedUser import NamedUser
 from github.Repository import Repository
+from gql import Client
+from gql import gql
+from gql.transport.requests import RequestsHTTPTransport
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
 
 
 logger = logging.getLogger(__name__)
+
+
+def graphql_query(query: str):
+    headers = {"Authorization": f"token {os.environ.get('GITHUB_TOKEN')}",
+               "X-GitHub-Next-Global-ID": "1"}
+    transport = RequestsHTTPTransport(url="https://api.github.com/graphql", headers=headers)
+    client = Client(transport=transport)
+    response = client.execute(gql(query))
+    return response
 
 
 def get_repo(repository: str) -> Repository:
@@ -29,41 +40,49 @@ def get_failed_check_runs(check_suite: CheckSuite) -> List[CheckRun]:
     return [check_run for check_run in check_runs if check_run.conclusion == "failure"]
 
 
-def get_github_user_by_id(github_actor_id: str) -> NamedUser:
-    """Get the GitHub user by ID."""
+def get_github_email_by_id(github_actor_id: str) -> str | None:
+    """Get the email user by GitHub ID."""
     logging.info(f"Getting GitHub user by ID {github_actor_id}")
     github = Github(os.environ.get('GITHUB_TOKEN'))
-    return github.get_user_by_id(int(github_actor_id))
+    github_user = github.get_user_by_id(int(github_actor_id))
+    response = graphql_query(f"""
+    query {{
+      node(id: "{github_user.node_id}") {{
+        ... on User {{
+          organizationVerifiedDomainEmails(login: "SonarSource")
+        }}
+      }}
+    }}
+    """)
+    if response.get("node", None):
+        return response["node"]["organizationVerifiedDomainEmails"][0]
+    return None
 
 
-def find_slack_user(users_list: List, first_name: str, last_name: str):
+def find_slack_user(users_list: List, email: str):
     for user in users_list:
         profile = user["profile"]
-        if profile.get("first_name", "") == first_name and profile.get("last_name", "") == last_name:
+        if profile.get("email", "") == email:
             return user
     return None
 
 
-def get_slack_user_by_name(github_user: NamedUser):
-    """Get the Slack user for a given user name."""
-    if github_user.name is None:
-        return None
-
-    first_name, last_name = github_user.name.split(' ')
-    logging.info(f"Getting Slack user by name: {first_name} {last_name}")
+def get_slack_user_by_email(email: str):
+    """Get the Slack user for a given user email."""
+    logging.info(f"Getting Slack user by email: {email}")
     client = WebClient(token=os.environ.get('SLACK_TOKEN'))
 
     try:
         logging.info("Listing Slack users")
         users = client.users_list()
-        return find_slack_user(users["members"], first_name, last_name)
+        return find_slack_user(users["members"], email)
     except SlackApiError as e:
         if e.response.status_code == 429:
             delay = int(e.response.headers["Retry-After"])
             logging.info(f"Rate limited. Retrying in {delay} seconds.")
             time.sleep(delay)
             users = client.users_list()
-            return find_slack_user(users["members"], first_name, last_name)
+            return find_slack_user(users["members"], email)
         else:
             logging.error(f"Error listing Slack users: {e.response}")
             sys.exit(1)
@@ -144,8 +163,8 @@ def main():
     logging.info(f"Retrieving failed check runs for {repository} and check suite ID: {check_suite_id}")
     try:
         repo = get_repo(repository)
-        github_user = get_github_user_by_id(github_actor_id)
-        slack_user = get_slack_user_by_name(github_user)
+        github_email = get_github_email_by_id(github_actor_id)
+        slack_user = get_slack_user_by_email(github_email)
         check_suite = repo.get_check_suite(int(check_suite_id))
         failed_check_runs = get_failed_check_runs(check_suite)
         attachments = create_slack_attachments(failed_check_runs, repo.full_name, slack_user["id"] if slack_user else "")
