@@ -4,7 +4,7 @@ on:
 
 jobs:
   build:
-    runs-on: sonar-runner
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       checks: read
