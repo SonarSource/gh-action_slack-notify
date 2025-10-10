@@ -18,6 +18,10 @@ runs:
         secrets: |
           development/kv/data/slack token | slack_token;
 
+    - name: Install libffi-dev
+      run: sudo apt-get install -y libffi-dev
+      shell: bash
+
     - name: Install poetry
       run: pipx install poetry
       shell: bash
