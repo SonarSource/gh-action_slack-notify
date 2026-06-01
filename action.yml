@@ -13,7 +13,7 @@ runs:
     - name: Slack Secrets
       if: ${{ !env.ACT }}
       id: secrets
-      uses: SonarSource/vault-action-wrapper@d6d745ffdbc82b040df839b903bc33b5592cd6b0 # 3.0.2
+      uses: SonarSource/vault-action-wrapper@c154b4a417b51cb98dd71137f49bf20e77c56820 # 3.4.0
       with:
         secrets: |
           development/kv/data/slack token | slack_token;
@@ -23,13 +23,13 @@ runs:
       shell: bash
 
     - name: Set up Python
-      uses: actions/setup-python@42375524e23c412d93fb67b49958b491fce71c38 # v5.4.0
+      uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
       with:
         python-version-file: ${{ github.action_path }}/pyproject.toml
         # Remove cache: 'poetry'
 
     - name: Cache Poetry dependencies
-      uses: actions/cache@v3
+      uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
       id: poetry-cache
       with:
         path: ${{ github.action_path }}/.venv
