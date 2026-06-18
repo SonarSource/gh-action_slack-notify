@@ -68,7 +68,7 @@ def get_slack_user_by_name(github_user: NamedUser):
             users = client.users_list()
             return find_slack_user(users["members"], first_name, last_name)
         else:
-            logging.error(f"Error listing Slack users: {e.response}")
+            logging.exception(f"Error listing Slack users: {e.response}")
             sys.exit(1)
 
 
@@ -134,7 +134,7 @@ def post_message(channel: str, attachments: List):
             result = client.chat_postMessage(channel=channel, text="Failed check runs", attachments=attachments)
             logging.info(f"Message sent: {result}")
         else:
-            logging.error(f"Error posting message: {e.response}")
+            logging.exception(f"Error posting message: {e.response}")
             sys.exit(1)
 
 
@@ -155,7 +155,7 @@ def main():
         post_message(slack_channel, attachments)
         sys.exit(0)
     except GithubException as e:
-        logging.error(f"Error: {e}")
+        logging.exception(f"Error: {e}")
         sys.exit(1)
 
 
