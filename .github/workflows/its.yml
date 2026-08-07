@@ -34,4 +34,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         uses: ./
         with:
-          slackChannel: 'squad-eng-xp-tests'
+          slackChannel: 'squad-eng-xp-tech-discussions'
