@@ -18,6 +18,10 @@ runs:
         secrets: |
           development/kv/data/slack token | slack_token;
 
+    # config-pip must run before installing poetry: pipx's internal pip upgrade
+    # hits public PyPI directly, which fails when direct PyPI/registry egress is blocked.
+    - uses: SonarSource/ci-github-actions/config-pip@v1
+
     - name: Install poetry
       run: pipx install poetry
       shell: bash
