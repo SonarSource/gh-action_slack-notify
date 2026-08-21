@@ -5,6 +5,11 @@ description = "GitHub action to send Slack notifications for failed GitHub Check
 authors = ["Engineering Experience Squad <platform.eng-ex@sonarsource.com>"]
 package-mode = false
 
+[[tool.poetry.source]]
+name = "repox"
+url = "https://repox.jfrog.io/artifactory/api/pypi/sonarsource-pypi/simple"
+priority = "primary"
+
 [tool.poetry.dependencies]
 python = "^3.10"
 pygithub = "^2.6.1"

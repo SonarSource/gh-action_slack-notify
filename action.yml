@@ -18,21 +18,24 @@ runs:
         secrets: |
           development/kv/data/slack token | slack_token;
 
-    # config-pip must run before installing poetry: pipx's internal pip upgrade
-    # hits public PyPI directly, which fails when direct PyPI/registry egress is blocked.
     - name: Config pip
       if: ${{ !env.ACT }}
-      uses: SonarSource/ci-github-actions/config-pip@983645f538ff01044b1e567adb23e6f527d8b52a # 1.8.9
-
-    - name: Install poetry
-      run: pipx install poetry
-      shell: bash
+      uses: SonarSource/ci-github-actions/config-pip@v1
 
     - name: Set up Python
       uses: actions/setup-python@42375524e23c412d93fb67b49958b491fce71c38 # v5.4.0
       with:
         python-version-file: ${{ github.action_path }}/pyproject.toml
-        # Remove cache: 'poetry'
+
+    - name: Config poetry
+      if: ${{ !env.ACT }}
+      uses: SonarSource/ci-github-actions/config-poetry@v1
+      with:
+        working-directory: ${{ github.action_path }}
+        disable-caching: true
+      env:
+        CURRENT_VERSION: "0.1.0"
+        PROJECT_VERSION: "0.1.0"
 
     - name: Cache Poetry dependencies
       uses: actions/cache@v3
