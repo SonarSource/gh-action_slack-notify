@@ -31,7 +31,8 @@ runs:
     - name: Set up Python
       uses: actions/setup-python@42375524e23c412d93fb67b49958b491fce71c38 # v5.4.0
       with:
-        python-version-file: ${{ github.action_path }}/pyproject.toml
+        # Select a tested runtime instead of the newest version allowed by ^3.10.
+        python-version-file: ${{ github.action_path }}/.python-version
         # Remove cache: 'poetry'
 
     - name: Cache Poetry dependencies
