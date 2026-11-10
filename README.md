@@ -4,7 +4,8 @@
 >
 > This action is **only compatible with legacy Cirrus CI notifications** based on GitHub check suite events.
 >
-> **For modern GitHub Actions workflows**, please use [rtCamp/action-slack-notify](https://github.com/rtCamp/action-slack-notify)
+> **For modern GitHub Actions workflows**, please use
+> [step-security/slack-github-action](https://github.com/step-security/slack-github-action)
 > instead (see [Recommended Alternative](#recommended-alternative) below).
 
 This repository provides a GitHub Action for sending build failure notifications to a Slack channel.
@@ -56,14 +57,17 @@ jobs:
 
 ## Recommended Alternative
 
-For modern GitHub Actions workflows, we recommend using
-[rtCamp/action-slack-notify](https://github.com/rtCamp/action-slack-notify) with SonarSource Vault integration:
+For modern GitHub Actions workflows, use
+[step-security/slack-github-action](https://github.com/step-security/slack-github-action) v4.0.0
+(`fd40160713f6a8cec8aceb5c1e3c0a1e42960eb2`) with SonarSource Vault integration.
+It is the StepSecurity-maintained fork of Slack's official action. Pin that commit.
+It runs on our hosted runners: `sonar-xs` for private repositories and `sonar-xs-public` for public ones.
 
 ```yaml
 ---
 jobs:
   notify:
-    runs-on: github-ubuntu-latest-s # Public GitHub hosted runner required, Self-Hosted runners do not support Docker-in-Docker
+    runs-on: sonar-xs # public repositories use sonar-xs-public
     permissions:
       id-token: write
     if: failure()
@@ -75,20 +79,17 @@ jobs:
           secrets: |
             development/kv/data/slack token | SLACK_TOKEN;
 
-      - name: Slack Notification rtCamp
-        uses: rtCamp/action-slack-notify@e31e87e03dd19038e411e38ae27cbad084a90661 # v2.3.3
-        env:
-          SLACK_TOKEN: >-
-            ${{ fromJSON(steps.secrets.outputs.vault).SLACK_TOKEN }}
-          SLACK_CHANNEL: your-channel-name
-          SLACK_TITLE: Build Failed
-          SLACK_MESSAGE: |
-            Workflow failed in ${{ github.repository }} 🚨
-            ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-            Branch: ${{ github.event.workflow_run.head_branch }}
-
-          SLACK_USERNAME: BuildBot
-          SLACK_COLOR: danger
+      - name: Slack Notification
+        uses: step-security/slack-github-action@fd40160713f6a8cec8aceb5c1e3c0a1e42960eb2 # v4.0.0
+        with:
+          method: chat.postMessage
+          token: ${{ fromJSON(steps.secrets.outputs.vault).SLACK_TOKEN }}
+          payload: |
+            channel: your-channel-name
+            text: |
+              Workflow failed in ${{ github.repository }}
+              ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+              Branch: ${{ github.ref_name }}
 ```
 
 ### Channel Configuration
